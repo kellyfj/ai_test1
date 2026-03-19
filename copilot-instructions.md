@@ -97,6 +97,25 @@ Every critical NFR from the PRD must have at least one row. Technology choices t
 
 > **LIVING DOCUMENT**: `docs/DESIGN.md` must be kept up to date throughout the project. Whenever a new technology is adopted, an architectural decision is made or revised, a rejected alternative is reconsidered, or an NFR traceability mapping changes, update DESIGN.md immediately — do not defer. If a code change implies an architectural decision not yet recorded, add it to DESIGN.md as part of the same change.
 
+### Technology Decision Process
+
+When proposing any technology choice (e.g. database, cache, message broker, container platform, DRM vendor, auth provider):
+
+1. **One technology at a time** — do not batch multiple choices into a single table or paragraph; present each decision separately
+2. **State the chosen option** and the primary NFR(s) it satisfies
+3. **Present exactly 2 named alternatives** that were genuinely considered
+4. **Explain why each alternative was rejected** — be specific (cost, operational burden, missing feature, risk, etc.)
+5. **Wait for confirmation** before recording the choice in `docs/DESIGN.md`
+
+**Format for each technology decision:**
+
+> **Decision: \<component\>**
+> - **Chosen**: \<technology\> — \<one-line justification tied to an NFR\>
+> - **Alternative 1**: \<technology\> — rejected because \<specific reason\>
+> - **Alternative 2**: \<technology\> — rejected because \<specific reason\>
+
+Do **not** compress multiple technology decisions into a single response. Work through them one at a time and wait for approval at each step.
+
 ---
 
 ## Java / Spring Boot Projects
