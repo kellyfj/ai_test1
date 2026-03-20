@@ -3,22 +3,14 @@ name: Project Instructions
 description: "Workspace guidelines for all agent interactions"
 ---
 
-# Coding Approach
-
-## Present Ideas Before Code
-
-When proposing solutions:
-1. **Present 3–5 ideas first** with brief descriptions (what each does, tradeoffs)
-2. **Wait for feedback** before implementing
-3. Only write code after you've gotten input or guidance
-
-This approach ensures we discuss options, constraints, and design upfront rather than jumping straight to implementation.
+# General Approach
 
 ## Clarifying Questions
 
 When asking for clarification, **always explain upfront what I'll do with the answers**. Don't just ask — say "I'll use this to generate X" or "This will determine Y." Be specific about the outcome.
 
 **Hard limit: never ask more than 3–5 questions at once.** If more information is needed, ask the most critical questions first, then ask follow-ups in a later round once those are answered.
+
 
 ## Response Brevity
 
@@ -28,11 +20,24 @@ When asking for clarification, **always explain upfront what I'll do with the an
 - Avoid lengthy explanations; ask for clarification instead
 - If something requires detail, offer it only if asked
 
-## Requirements & PRD
+# Sequence of Work
+
+## Order of work — always follow this sequence:
+1. **Write and confirm PRD** — capture problem statement, goals, user stories, functional requirements, NFRs, and constraints in `docs/PRD.md`; wait for approval before proceeding
+2. **Write and confirm Technical Design** — record technology choices (each mapped to at least one NFR), architecture overview, and API design decisions in `docs/DESIGN.md`; wait for approval before proceeding
+3. **Discuss and confirm entities** — propose entity names, key fields, and relationships as a table; wait for approval before writing any spec or code
+4. Write and confirm `openapi.yaml` spec (built from the confirmed entities; all paths prefixed with `/api/v1`)
+5. Generate scaffold (entities, repositories, controller interfaces) from the spec
+6. Write service interfaces
+7. Add implementations when explicitly asked
+8. Add unit tests
+9. Add integration tests when explicitly asked
+
+# Requirements & PRD
 
 Before any design or code work begins, capture requirements in a **PRD document** at `docs/PRD.md`.
 
-### PRD must include
+## PRD must include
 
 | Section | Content |
 |---|---|
@@ -45,7 +50,7 @@ Before any design or code work begins, capture requirements in a **PRD document*
 | **Constraints** | Tech stack, deadlines, budget, compliance |
 | **Open Questions** | Unresolved decisions that must be answered before build |
 
-### NFR categories to always address
+## NFR categories to always address
 
 - **Performance** — e.g. p99 response time, throughput targets
 - **Scalability** — expected load, growth projections
@@ -59,11 +64,11 @@ Before any design or code work begins, capture requirements in a **PRD document*
 
 > **LIVING DOCUMENT**: `docs/PRD.md` must be kept up to date throughout the project. Whenever requirements change, new user stories emerge, scope is added or cut, or open questions are resolved, update the PRD immediately — do not defer. If a code or design decision contradicts the PRD, flag the conflict and update the PRD before proceeding.
 
-## Technical Design Document
+# Technical Design Document
 
 After the PRD is confirmed, capture all significant technical and architectural decisions in `docs/DESIGN.md`.
 
-### DESIGN.md must include
+## DESIGN.md must include
 
 | Section | Content |
 |---|---|
@@ -77,7 +82,7 @@ After the PRD is confirmed, capture all significant technical and architectural 
 | **Rejected Alternatives** | What was considered and why it was ruled out |
 | **Open Design Questions** | Decisions still to be made before implementation |
 
-### NFR traceability table format
+## NFR traceability table format
 
 For every **critical NFR** defined in the PRD, record how it is addressed by one or more technology or design choices:
 
@@ -97,7 +102,7 @@ Every critical NFR from the PRD must have at least one row. Technology choices t
 
 > **LIVING DOCUMENT**: `docs/DESIGN.md` must be kept up to date throughout the project. Whenever a new technology is adopted, an architectural decision is made or revised, a rejected alternative is reconsidered, or an NFR traceability mapping changes, update DESIGN.md immediately — do not defer. If a code change implies an architectural decision not yet recorded, add it to DESIGN.md as part of the same change.
 
-### Technology Decision Process
+## Technology Decision Process
 
 When proposing any technology choice (e.g. database, cache, message broker, container platform, DRM vendor, auth provider):
 
@@ -116,6 +121,19 @@ When proposing any technology choice (e.g. database, cache, message broker, cont
 
 Do **not** compress multiple technology decisions into a single response. Work through them one at a time and wait for approval at each step.
 
+
+# Coding Approach
+
+## Present Ideas Before Code
+
+When proposing solutions:
+1. **Present 3–5 ideas first** with brief descriptions (what each does, tradeoffs)
+2. **Wait for feedback** before implementing
+3. Only write code after you've gotten input or guidance
+
+This approach ensures we discuss options, constraints, and design upfront rather than jumping straight to implementation.
+
+
 ---
 
 ## Java / Spring Boot Projects
@@ -132,16 +150,7 @@ Always ask about the following before generating any code or scaffold:
 
 **API Versioning**: Always use **URL path prefix** versioning (e.g. `/api/v1/meetings`). All controllers must be rooted at `/api/v1`. When a v2 is needed, add a new controller package alongside v1 — never modify existing versioned routes.
 
-**Order of work — always follow this sequence:**
-1. **Write and confirm PRD** — capture problem statement, goals, user stories, functional requirements, NFRs, and constraints in `docs/PRD.md`; wait for approval before proceeding
-2. **Write and confirm Technical Design** — record technology choices (each mapped to at least one NFR), architecture overview, and API design decisions in `docs/DESIGN.md`; wait for approval before proceeding
-3. **Discuss and confirm entities** — propose entity names, key fields, and relationships as a table; wait for approval before writing any spec or code
-4. Write and confirm `openapi.yaml` spec (built from the confirmed entities; all paths prefixed with `/api/v1`)
-5. Generate scaffold (entities, repositories, controller interfaces) from the spec
-6. Write service interfaces
-7. Add implementations when explicitly asked
-8. Add unit tests
-9. Add integration tests when explicitly asked
+
 
 **Entity-first rule**: Just as interfaces come before implementations in code, entity design comes before the API spec. Never define request/response schemas in `openapi.yaml` until the entities have been reviewed and confirmed.
 
@@ -227,7 +236,6 @@ For all Spring Boot projects:
 - Always define `components/schemas` for all request/response bodies — no inline schemas
 
 
-
 When asked to generate integration tests:
 
 - Use **Testcontainers** with a `postgres` container matching the project's database
@@ -239,5 +247,3 @@ When asked to generate integration tests:
   - Declares the container as a `static` field so it is shared across all tests in the class
 - Integration tests run as a **separate Gradle task** (`./gradlew integrationTest`), not as part of `./gradlew check`
 - Add a `integrationTest` source set and task to `build.gradle` with the Testcontainers dependency scoped to that source set only
-
-
