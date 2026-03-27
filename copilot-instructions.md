@@ -61,7 +61,7 @@ Before any design or code work begins, capture requirements in a **PRD document*
 - **Observability** — logging, metrics, tracing expectations
 - **Portability / Deployment** — target environments (cloud, on-prem, containerised)
 
-> **RULE**: A PRD must be written, reviewed, and confirmed before entity design begins. No entity tables, API specs, or code are produced until the PRD is approved.
+> **RULE**: A PRD must be written, reviewed, and confirmed before entity design begins or technology choices are discussed. No entity tables, API specs, or code are produced until the PRD is approved.
 
 > **LIVING DOCUMENT**: `docs/PRD.md` must be kept up to date throughout the project. Whenever requirements change, new user stories emerge, scope is added or cut, or open questions are resolved, update the PRD immediately — do not defer. If a code or design decision contradicts the PRD, flag the conflict and update the PRD before proceeding.
 
@@ -121,6 +121,27 @@ When proposing any technology choice (e.g. database, cache, message broker, cont
 > - **Alternative 2**: \<technology\> — rejected because \<specific reason\>
 
 Do **not** compress multiple technology decisions into a single response. Work through them one at a time and wait for approval at each step.
+
+### Deployment Platform Decision — ask first, always
+
+**The deployment platform MUST be the first technology decision made in every project** — before database, messaging, auth, or anything else. It is not an assumption, a default, or an afterthought.
+
+> **RULE**: Never assume Kubernetes (or any specific platform) without explicit confirmation. Kubernetes is one option among several; it is not the default and must be justified like any other technology choice.
+
+Ask the following before proposing any deployment-related technology:
+
+> "Before we go further, what is the target deployment platform?
+> - **Kubernetes** — maximum portability and control; requires cluster management or a managed service (EKS, GKE, AKS); enables KEDA for event-driven autoscaling
+> - **Managed containers** (ECS, Cloud Run, Azure Container Apps) — lower ops burden; autoscaling via platform-native mechanisms; cloud-vendor lock-in
+> - **VMs / bare metal** — simplest runtime; no orchestration layer; manual scaling and failover
+> - **Other / not yet decided**"
+
+In `DESIGN.md`:
+- The deployment platform MUST appear as the **first section** — before Architecture Overview, before technology stack
+- It MUST have its own technology decision entry with **named rejected alternatives** and **explicit NFR justification**
+- Every subsequent technology choice that depends on the platform (autoscaler, ingress, service mesh, secret store, etc.) MUST reference it
+
+In the **Rejected Alternatives** table, always include entries for the deployment platforms that were considered and not chosen, explaining why.
 
 
 # Coding Approach
